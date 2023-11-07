@@ -1,25 +1,14 @@
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
+# from keras.engine.saving import model_from_json
 
+
+# Import other libraries
+# Import tensorflow
 # Load the NPZ dataset
-data = np.load('public_data.npz', allow_pickle=True)
+from model import CNNModel
 
-images = data['data']
-labels = data['labels']
+test_model = CNNModel()
+data_arr, labels_arr = test_model.load_dataset()
+prep_data, prep_labels = test_model.preprocess_data(data_arr, labels_arr)
+X_train, X_val, y_train, y_val = test_model.create_data_split(prep_data, prep_labels)
+history = test_model.train(X_train, y_train, X_val, y_val, batch_size=128, epochs=25)
 
-# Check the dimensions of the dataset
-print("Number of images:", len(images))
-print("Image shape:", images[0].shape)
-print("Number of labels:", len(labels))
-
-num_samples_to_visualize = 10
-for i in range(num_samples_to_visualize):
-    plt.subplot(1, num_samples_to_visualize, i + 1)
-    imageInt = images[i].astype(np.uint8)
-    print(imageInt)
-    plt.imshow(imageInt)  # Convert from RGB to GRAYSCALE
-    plt.title("Label: " + labels[i])
-    plt.axis('off')
-
-plt.show()
